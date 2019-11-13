@@ -1,26 +1,19 @@
 import numpy as np
 import csv
 
-# ---------------------------------------------
-# CSCI 127, Joy and Beauty of Data      
-# Program 5: Wacky Packages
-# Mariafe Ponce      
-# Last Modified: November 13, 2019               
-# ---------------------------------------------
-# Program reads from a 'Wacky Packages' csv file
-# and loads the series' information into an instance
-# of the WackyPackageSeries class called my_collection.
-# Then it reads from another csv file and updates
-# my_collection with the number of cards already owned.
-# Program is able to print the collection's info
-# in a readable format, is also able to calculate the
-# total value of the owned collection, the amount
-# of cards missing to complete the collection, and
-# how much it would cost to complete it.
-#
-# HONOR'S ADDITION: The program also lets user sell
-# cards they already own and use the money earned
-# from selling them to buy other cards
+""" Program reads from a 'Wacky Packages' csv file
+and loads the series' information into an instance
+of the WackyPackageSeries class called my_collection.
+Then it reads from another csv file and updates
+my_collection with the number of cards already owned.
+Program is able to print the collection's info
+in a readable format, is also able to calculate the
+total value of the owned collection, the amount
+of cards missing to complete the collection, and
+how much it would cost to complete it.
+Finally, the program also lets user sell
+cards they already own and use the money earned
+from selling them to buy other cards """
 # ---------------------------------------------
 
 class WackyPackageSeries:
@@ -39,7 +32,6 @@ class WackyPackageSeries:
         output = "My {} collection of {} Wacky Packages\n\n".format(self.year, self.manufacturer)
         output += "Number    Description                   Value     Owned\n"
         output += "------    -----------                   -----     -----\n"
-        # itirates over every item in np array and uses each object's instance str method
         for item in self.cards:
             output += str(item) + "\n"
         return output
@@ -50,7 +42,7 @@ class WackyPackageSeries:
     def read_series_information(self, file):
         with open(file) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0 # keeps index count to access each np array item in self.cards
+            line_count = 0
             for line in csv_reader:
                 self.cards[line_count] = WackyPackageCard(int(line[0]), line[1], float(line[2]))
                 line_count += 1
@@ -62,11 +54,11 @@ class WackyPackageSeries:
         with open(file) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for line in csv_reader:
-                reformatted_line = " ".join(line[0].split()).lower() # gets rid of weird cases and extra spaces
+                reformatted_line = " ".join(line[0].split()).lower()
                 for card in self.cards:
-                    if card.get_description().lower() == reformatted_line: # compares lower case of both
-                        card.set_cards_owned(card.get_cards_owned() + 1) # updates cards_owned count
-                        break # breaks out of loop if card was already found
+                    if card.get_description().lower() == reformatted_line:
+                        card.set_cards_owned(card.get_cards_owned() + 1)
+                        break
 
     """ iterates over every card in collection, checks for each if cards_owned is 0,
         if so update count and update cost. Returns two values"""
@@ -93,15 +85,13 @@ class WackyPackageSeries:
     def buy_sell(self):
         print("Your current funds are: ${:.2f}".format(self.cash_value))
         user_continue = ""
-        # prompts user until valid input is entered
         while user_continue.lower() != "y" and user_continue.lower() != "n":
             user_continue = input("Would you like to buy or sell a card? (Y/N): ")
         if user_continue.lower() == "y":
             card = ""
             sell_or_buy = ""
-            while card == "": # prompts user until card name is entered
+            while card == "":
                 card = input("Which card would you like to buy or sell? ")
-            # prompts user until valid input is entered
             while sell_or_buy.lower() != "s" and sell_or_buy.lower() != "b":
                 sell_or_buy = input("Would you like to Sell or Buy? (S/B): ")
             if sell_or_buy.lower() == "s":
@@ -117,12 +107,12 @@ class WackyPackageSeries:
     def sell_card_update(self, card_description):
         reformatted_description = " ".join(card_description.split()).lower()
         card_avail = False
-        for card in self.cards: # iterates over every card in collection
-            if card.get_description().lower() == reformatted_description: # checks if card in collection
-                if card.get_cards_owned() > 0: # checks if user owns card
+        for card in self.cards:
+            if card.get_description().lower() == reformatted_description:
+                if card.get_cards_owned() > 0:
                     card_avail = True
-                    card.set_cards_owned(card.get_cards_owned() - 1) # updates cards owned
-                    self.cash_value += card.get_value() # updates cash value funds
+                    card.set_cards_owned(card.get_cards_owned() - 1)
+                    self.cash_value += card.get_value()
                     print("\nYou have sold {}\n".format(card.get_description()))
                     print("Your updated Collection is:\n")
                     print(self)
@@ -145,12 +135,12 @@ class WackyPackageSeries:
             self.buy_sell()
         else:
             reformatted_description = " ".join(card_description.split()).lower()
-            for card in self.cards: # iterates over every card in collection
-                if card.get_description().lower() == reformatted_description: # checks if card in collection
+            for card in self.cards:
+                if card.get_description().lower() == reformatted_description:
                     card_avail = True
-                    if card.get_value() <= self.cash_value: # checks if enough funds
-                        card.set_cards_owned(card.get_cards_owned() + 1) # updates cards_owned
-                        self.cash_value -= card.get_value() # updates cash value funds
+                    if card.get_value() <= self.cash_value:
+                        card.set_cards_owned(card.get_cards_owned() + 1)
+                        self.cash_value -= card.get_value()
                         print("\nYou have bought {}\n".format(card.get_description()))
                         print("Your updated Collection is:\n")
                         print(self)
@@ -164,7 +154,7 @@ class WackyPackageSeries:
                 self.buy_sell()
                 
 # ---------------------------------------------
-
+""" The following code was provided by Professor John Paxton """
 class WackyPackageCard:
     def __init__(self, number, description, value):
         self.number = number
